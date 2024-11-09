@@ -35,8 +35,7 @@ size_t	ft_strlen(char *str)
 		result++;
 	return (result);
 }
-
-char	*ft_strjoin(char *remains, char *buffer)
+static char	*ft_sup_strjoin(char *remains, char *buffer)
 {
 	char	*result;
 	int		i;
@@ -59,11 +58,10 @@ char	*ft_strjoin(char *remains, char *buffer)
 	while (buffer[i])
 		result[j++] = buffer[i++];
 	result[ft_strlen(remains) + ft_strlen(buffer)] = '\0';
-	free(remains);
-	return (result);
+	return (free(remains), result);
 }
 
-char	*push_line(char *buffer)
+static char	*push_line(char *buffer)
 {
 	char	*result;
 	int		i;
@@ -80,21 +78,13 @@ char	*push_line(char *buffer)
 		return (NULL);
 	i = 0;
 	while (buffer[i] && buffer[i] != '\n')
-	{
-		result[i] = buffer[i];
-		i++;
-	}
+		(result[i] = buffer[i], i++);
 	if (buffer[i] == '\n')
-	{
-		result[i] = '\n';
-		result[i + 1] = '\0';
-		return (result);
-	}
-	result[i] = '\0';
-	return (result);
+		return (result[i] = '\n', result[i + 1] = '\0', result);
+	return (result[i] = '\0', result);
 }
 
-char	*get_remains(char *remains)
+static char	*get_remains(char *remains)
 {
 	int		i;
 	int		j;
@@ -106,10 +96,7 @@ char	*get_remains(char *remains)
 	while (remains[i] && remains[i] != '\n')
 		i++;
 	if (remains[i] == '\0')
-	{
-		free(remains);
-		return (NULL);
-	}
+		return (free(remains), NULL);
 	result = malloc(sizeof(char) * (ft_strlen(&remains[i]) + 1));
 	if (!result)
 		return (NULL);
@@ -117,9 +104,7 @@ char	*get_remains(char *remains)
 	j = 0;
 	while (remains[i])
 		result[j++] = remains[i++];
-	result[j] = '\0';
-	free(remains);
-	return (result);
+	return (result[j] = '\0', free(remains), result);
 }
 
 char	*get_next_line(int fd)
@@ -137,19 +122,15 @@ char	*get_next_line(int fd)
 	{
 		count = read(fd, buffer, BUFFER_SIZE);
 		buffer[count] = '\0';
-		remains = ft_strjoin(remains, buffer);
+		remains = ft_sup_strjoin(remains, buffer);
 	}
 	result = push_line(remains);
 	remains = get_remains(remains);
 	if (result[0] == '\0')
-	{
-		free(result);
-		return (NULL);
-	}
+		return (free(result), NULL);
 	return (result);
 }
 
-/*
 int	main(void)
 {
 	int fd;
@@ -165,15 +146,4 @@ int	main(void)
 	}
 	close(fd);
 	return (0);
-}*/
-
-/**
- * EXPLICATION DE L'ALGORITHME
- * 1
-	- lire la ligne dans le fichier avec read dans buffer jusqu'a ce que la ligne lue contient '\n' et q'on arrive a lire dans le fichier
- * 2
-	- join les lignes lues avec buffer pour avoir une ligne 'remains' contenant les possibles restes a chaque fois qu'on lit
- * 3
-	- prendre les char devant le \\n puis le mettre dans une valeur de retour 'result'
- * 4 - prendre les eventuels restes puis les mettre dans 'remains'
- */
+}

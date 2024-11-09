@@ -147,14 +147,14 @@ int	ft_printf(const char *str, ...)
 	va_end(ap);
 	return (printed);
 }
-/*
+
 #include <stdio.h>
 
 int	main(void)
 {
-	ft_printf("%s\n", NULL);
+	ft_printf("%x\n", -1);
 	return (0);
-}*/
+}
 
 /**
  * EXPLICATIONS DE L'algorithme
